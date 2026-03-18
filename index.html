@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>dirtyclub.official</title>
+<title>dirtyclub</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -17,7 +17,6 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
 
   body {
@@ -40,10 +39,7 @@
     overflow: hidden;
     white-space: nowrap;
   }
-  .ticker-inner {
-    display: inline-block;
-    animation: ticker 18s linear infinite;
-  }
+  .ticker-inner { display: inline-block; animation: ticker 18s linear infinite; }
   .ticker span { margin: 0 40px; }
   @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
@@ -82,7 +78,6 @@
   .nav-right svg { width: 18px; height: 18px; cursor: pointer; stroke: var(--black); fill: none; stroke-width: 1.5; transition: opacity 0.2s; }
   .nav-right svg:hover { opacity: 0.45; }
 
-  /* CART BADGE */
   .cart-wrap { position: relative; display: flex; }
   .cart-badge {
     position: absolute;
@@ -93,29 +88,9 @@
     font-weight: 700;
     border-radius: 50%;
     width: 15px; height: 15px;
-    display: flex; align-items: center; justify-content: center;
     display: none;
-  }
-
-  /* HERO */
-  .hero {
-    padding: 64px 32px 20px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-  }
-  .hero h1 {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 8vw, 96px);
-    line-height: 0.9;
-    letter-spacing: -0.01em;
-  }
-  .hero-sub {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--mid);
-    padding-bottom: 8px;
+    align-items: center;
+    justify-content: center;
   }
 
   /* FILTER BAR */
@@ -140,22 +115,19 @@
     transition: all 0.2s;
     color: var(--black);
   }
-  .filter-btn:hover, .filter-btn.active {
-    background: var(--black);
-    color: var(--white);
-    border-color: var(--black);
-  }
+  .filter-btn:hover, .filter-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
 
   /* GRID */
- .grid {
-  display: grid;
-  grid-template-columns: repeat(2, 420px); /* fixed card width */
-  justify-content: center; /* center grid */
-  gap: 60px; /* space between products */
-  padding: 60px 0;
-  background: var(--white);
-  border-top: 1px solid #ddd;
-}
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 420px);
+    justify-content: center;
+    gap: 60px;
+    padding: 60px 0;
+    background: var(--white);
+    border-top: 1px solid #ddd;
+  }
+
   /* PRODUCT CARD */
   .card {
     background: var(--white);
@@ -166,65 +138,25 @@
   }
   .card:hover { background: var(--grey); }
 
-  .card-img {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
-    background: var(--grey);
-  }
-  .card:hover .card-img { transform: scale(1.03); }
-.img-placeholder {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1/1;
-  overflow: hidden;
-  background: #f2f2f2;
-}
-
-.img-placeholder img {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  top: 0;
-  left: 0;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-/* Default image visible */
-.img-default {
-  opacity: 1;
-}
-
-/* Hover image hidden initially */
-.img-hover {
-  opacity: 0;
-}
-
-/* On hover */
-.img-placeholder:hover .img-default {
-  opacity: 0;
-  transform: scale(1.05);
-}
-
-.img-placeholder:hover .img-hover {
-  opacity: 1;
-  transform: scale(1.05);
-}
-  /* Placeholder image SVG */
   .img-placeholder {
+    position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #e0e0da;
-    transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: #f2f2f2;
   }
-  .card:hover .img-placeholder { transform: scale(1.03); }
-  .img-placeholder svg { width: 60px; opacity: 0.2; }
+  .img-placeholder img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0; left: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .img-default { opacity: 1; }
+  .img-hover { opacity: 0; }
+  .img-placeholder:hover .img-default { opacity: 0; transform: scale(1.05); }
+  .img-placeholder:hover .img-hover { opacity: 1; transform: scale(1.05); }
 
   .card-add {
     position: absolute;
@@ -244,11 +176,6 @@
     line-height: 1;
     padding-bottom: 2px;
   }
-  .modal-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
   .card:hover .card-add { opacity: 1; transform: translateY(0); }
   .card-add:hover { background: var(--accent); color: var(--black); }
 
@@ -259,19 +186,9 @@
     align-items: baseline;
     justify-content: space-between;
   }
-  .card-name {
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  .card-price {
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    color: var(--mid);
-  }
+  .card-name { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; }
+  .card-price { font-size: 12px; letter-spacing: 0.04em; color: var(--mid); }
 
-  /* TAG */
   .card-tag {
     position: absolute;
     top: 12px; left: 12px;
@@ -282,7 +199,34 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 3px 8px;
+    z-index: 2;
   }
+
+  /* COLOR SWATCHES ON CARD */
+  .card-colors {
+    position: absolute;
+    bottom: 80px; left: 16px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.25s;
+    z-index: 2;
+  }
+  .card:hover .card-colors { opacity: 1; transform: translateY(0); }
+
+  .color-swatch {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s, transform 0.2s;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+  }
+  .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.active { border-color: var(--accent); }
+  .color-swatch.black-swatch { background: #111; }
+  .color-swatch.white-swatch { background: #f5f5f0; }
 
   /* QUICK VIEW MODAL */
   .overlay {
@@ -307,6 +251,7 @@
     overflow-y: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    position: relative;
     transform: translateY(24px);
     transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
   }
@@ -318,16 +263,49 @@
     align-items: center;
     justify-content: center;
     min-height: 380px;
+    overflow: hidden;
   }
-  .modal-img-wrap svg { width: 80px; opacity: 0.15; }
+  .modal-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; }
 
   .modal-body { padding: 40px 32px; display: flex; flex-direction: column; gap: 20px; }
   .modal-tag { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); }
   .modal-name { font-family: var(--font-display); font-size: 36px; line-height: 1; letter-spacing: 0.02em; }
   .modal-price { font-size: 22px; font-weight: 300; }
-  .modal-desc { font-size: 13px; line-height: 1.7; color: #555; }
+  .modal-desc { font-size: 13px; line-height: 1.7; color: #555; white-space: pre-line; }
 
-  .size-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
+  .option-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
+  .option-val { font-weight: 500; color: var(--black); }
+
+  /* COLOR SWATCHES IN MODAL */
+  .modal-color-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+  .modal-color-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #ccc;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 7px 14px 7px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--black);
+  }
+  .modal-color-btn:hover, .modal-color-btn.selected { border-color: var(--black); background: var(--black); color: var(--white); }
+  .modal-color-btn .dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.12);
+  }
+  .modal-color-btn.selected .dot { box-shadow: 0 0 0 1px rgba(255,255,255,0.4); }
+  .dot-black { background: #111; }
+  .dot-white { background: #f5f5f0; border: 1px solid #ccc; }
+  .modal-color-btn.selected .dot-white { border-color: rgba(255,255,255,0.4); }
+
+  /* SIZE GRID */
   .size-grid { display: flex; gap: 6px; flex-wrap: wrap; }
   .size-btn {
     border: 1px solid #ccc;
@@ -408,14 +386,10 @@
     justify-content: space-between;
   }
   .cart-title { font-family: var(--font-display); font-size: 24px; letter-spacing: 0.04em; }
-  .cart-close-btn {
-    background: none; border: none; font-size: 22px; cursor: pointer; line-height: 1; color: var(--black);
-    transition: opacity 0.2s;
-  }
+  .cart-close-btn { background: none; border: none; font-size: 22px; cursor: pointer; line-height: 1; color: var(--black); transition: opacity 0.2s; }
   .cart-close-btn:hover { opacity: 0.45; }
 
   .cart-items { flex: 1; overflow-y: auto; padding: 16px 24px; display: flex; flex-direction: column; gap: 16px; }
-
   .cart-empty { text-align: center; color: var(--mid); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 40px; }
 
   .cart-item {
@@ -426,14 +400,10 @@
     padding-bottom: 16px;
     border-bottom: 1px solid #eee;
   }
-  .cart-item-thumb {
-    width: 64px; height: 64px;
-    background: var(--grey);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .cart-item-thumb svg { width: 28px; opacity: 0.2; }
+  .cart-item-thumb { width: 64px; height: 64px; background: var(--grey); overflow: hidden; }
+  .cart-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
   .cart-item-name { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; font-weight: 500; margin-bottom: 4px; }
-  .cart-item-size { font-size: 11px; color: var(--mid); margin-bottom: 6px; }
+  .cart-item-meta { font-size: 11px; color: var(--mid); margin-bottom: 6px; }
   .cart-item-qty { display: flex; align-items: center; gap: 8px; }
   .qty-btn {
     background: none; border: 1px solid #ccc; width: 24px; height: 24px;
@@ -482,11 +452,6 @@
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
-  .footer-socials { display: flex; gap: 16px; align-items: center; }
-  .social-link { color: var(--black); transition: opacity 0.2s; display: flex; }
-  .social-link:hover { opacity: 0.4; }
-  .social-link svg { width: 18px; height: 18px; }
-
   /* FOOTER */
   footer {
     border-top: 1px solid #ddd;
@@ -498,100 +463,32 @@
   }
   .footer-brand { font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; }
   .footer-copy { font-size: 11px; color: var(--mid); letter-spacing: 0.04em; }
+  .footer-socials { display: flex; gap: 16px; align-items: center; }
+  .social-link { color: var(--black); transition: opacity 0.2s; display: flex; }
+  .social-link:hover { opacity: 0.4; }
+  .social-link svg { width: 18px; height: 18px; }
 
-@media (max-width: 640px) {
-
-  header {
-    position: relative;
-    padding: 0 16px;
-    height: 56px;
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; padding: 0; }
   }
 
-  /* Make header layout clean */
-  .header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  @media (max-width: 640px) {
+    header { position: relative; padding: 0 16px; }
+    .logo { font-size: 16px; white-space: nowrap; }
+    .modal {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      max-height: 100vh;
+      border-radius: 0;
+      grid-template-columns: 1fr;
+      overflow-y: auto;
+    }
+    .modal-img-wrap { width: 100%; min-height: 300px; max-height: 50vh; }
+    .modal-body { padding: 20px 16px 32px; }
+    .modal-name { font-size: 18px; }
+    .modal-price { font-size: 16px; }
+    .add-to-cart-btn { width: 100%; padding: 14px; font-size: 14px; }
   }
-
-  /* Center logo properly */
-  .logo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 16px;   /* slightly smaller */
-    white-space: nowrap;
-  }
-
-  /* Prevent nav + icons from pushing layout */
-  .nav-left,
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-}
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1px;
-    padding: 0;
-  }
-}
-@media (max-width: 640px) {
-
-  .modal {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    max-height: 100vh;
-    border-radius: 0;
-    grid-template-columns: 1fr;
-    overflow-y: auto;
-  }
-
-  .modal-img-wrap {
-    width: 100%;
-    min-height: 300px;
-    max-height: 50vh;
-  }
-
-  .modal-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .modal-body {
-    padding: 20px 16px 32px;
-  }
-
-  .modal-name {
-    font-size: 18px;
-  }
-
-  .modal-price {
-    font-size: 16px;
-  }
-
-  .size-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-
-  .add-to-cart-btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 14px;
-  }
-
-  .modal-close {
-    top: 16px;
-    right: 16px;
-  }
-}
 </style>
 </head>
 <body>
@@ -599,21 +496,10 @@
 <!-- TICKER -->
 <div class="ticker" aria-hidden="true">
   <div class="ticker-inner">
-    <span>dirtyclub.official</span>
-    <span>—</span>
-     <span>NOT FOR EVERYONE</span>
-    <span>—</span>
-   <span>dirtyclub.official</span>
-    <span>—</span>
-   <span>NOT FOR EVERYONE</span>
-    <span>—</span>
-  <span>dirtyclub.official</span>
-    <span>—</span>
-   <span>NOT FOR EVERYONE</span>
-    <span>—</span>
-   <span>dirtyclub.official</span>
-    <span>—</span>
-      <span>NOT FOR EVERYONE</span>
+    <span>dirtyclub</span><span>—</span><span>NOT FOR EVERYONE</span><span>—</span>
+    <span>dirtyclub</span><span>—</span><span>NOT FOR EVERYONE</span><span>—</span>
+    <span>dirtyclub</span><span>—</span><span>NOT FOR EVERYONE</span><span>—</span>
+    <span>dirtyclub</span><span>—</span><span>NOT FOR EVERYONE</span><span>—</span>
   </div>
 </div>
 
@@ -623,7 +509,7 @@
     <a href="#">Shop</a>
     <a href="#">Contact</a>
   </nav>
-  <div class="logo">dirtyclub.official</div>
+  <div class="logo">dirtyclub</div>
   <div class="nav-right">
     <a href="#" aria-label="Search">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -632,7 +518,7 @@
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </a>
     <div class="cart-wrap" id="cartIcon" style="cursor:pointer;" aria-label="Cart">
-      <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
       <span class="cart-badge" id="cartBadge">0</span>
     </div>
   </div>
@@ -642,8 +528,7 @@
 <div class="filter-bar">
   <span class="filter-label">Filter</span>
   <button class="filter-btn active" data-filter="all">All</button>
-  <button class="filter-btn" data-filter="hoodies">Hoodies</button>
-  <button class="filter-btn" data-filter="tops">Tops</button>
+  <button class="filter-btn" data-filter="hoodies">420</button>
 </div>
 
 <!-- GRID -->
@@ -652,18 +537,18 @@
 <!-- QUICK VIEW MODAL -->
 <div class="overlay" id="modalOverlay" role="dialog" aria-modal="true">
   <div class="modal" id="modalContent">
-    <div class="modal-img-wrap" id="modalImg">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-        <rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/>
-      </svg>
-    </div>
+    <div class="modal-img-wrap" id="modalImg"></div>
     <div class="modal-body">
       <div class="modal-tag" id="modalTag">Category</div>
       <div class="modal-name" id="modalName">Product</div>
       <div class="modal-price" id="modalPrice">$00.00</div>
       <p class="modal-desc" id="modalDesc"></p>
       <div>
-        <div class="size-label">Select Size</div>
+        <div class="option-label">Color — <span class="option-val" id="colorLabel">—</span></div>
+        <div class="modal-color-grid" id="colorGrid"></div>
+      </div>
+      <div>
+        <div class="option-label">Size — <span class="option-val" id="sizeLabel">—</span></div>
         <div class="size-grid" id="sizeGrid"></div>
       </div>
       <button class="add-to-cart-btn" id="modalAddBtn" onclick="addFromModal()">
@@ -674,17 +559,15 @@
   </div>
 </div>
 
-<!-- CART SIDEBAR OVERLAY -->
-<div class="cart-sidebar-overlay" id="cartOverlay"></div>
-
 <!-- CART SIDEBAR -->
+<div class="cart-sidebar-overlay" id="cartOverlay"></div>
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
     <div class="cart-title">Cart</div>
     <button class="cart-close-btn" id="cartClose">✕</button>
   </div>
   <div class="cart-items" id="cartItems">
-    <div class="cart-empty" id="cartEmpty">Your cart is empty</div>
+    <div class="cart-empty">Your cart is empty</div>
   </div>
   <div class="cart-footer" id="cartFooter" style="display:none">
     <div class="cart-subtotal">
@@ -692,7 +575,8 @@
       <span class="cart-subtotal-val" id="cartTotal">$0.00</span>
     </div>
     <p class="cart-note">Shipping & taxes calculated at checkout</p>
-    <button class="checkout-btn">Checkout</button>
+    <!-- ✅ UPDATED: saves cart to localStorage before navigating -->
+    <button class="checkout-btn" onclick="goToCheckout()">Checkout</button>
   </div>
 </div>
 
@@ -701,63 +585,54 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-brand">dirtyclub.pfficial</div>
+  <div class="footer-brand">dirtyclub</div>
   <div class="footer-socials">
     <a href="#" aria-label="Instagram" class="social-link">
-      <!-- Instagram -->
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
     </a>
     <a href="#" aria-label="Facebook" class="social-link">
-      <!-- Facebook -->
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
     </a>
     <a href="#" aria-label="Telegram" class="social-link">
-      <!-- Telegram -->
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21.2 4.8L2.8 11.6c-1.2.5-1.2 1.2-.2 1.5l4.6 1.4 1.8 5.5c.2.7.5.9 1 .9.4 0 .6-.2.9-.4l2.2-2.1 4.5 3.3c.8.5 1.4.2 1.6-.8l2.9-13.5c.3-1.3-.5-1.9-1.9-1.6z"/></svg>
     </a>
   </div>
   <div class="footer-copy">© 2026 dirtyclub.official. All rights reserved.</div>
 </footer>
+
 <script>
-  // ─── PRODUCT DATA ────────────────────────────────────────────────────────────
+  // ─── PRODUCT DATA ─────────────────────────────────────────────────────────────
   const products = [
     {
       id: 1,
-      name: "dirtyclub",
-      price: 48.00,
+      name: "DIRTY 420",
+      price: 30.00,
       category: "hoodies",
       tag: "New",
-      desc: "Heavyweight washed fleece zip-up hoodie. Features embroidered division chest logo and tonal sleeve badge. Pre-shrunk, relaxed silhouette.",
-      sizes: ["XS","S","M","L","XL","XXL"],
-      soldOut: ["XS"],
-      images: {
-        default: "img/black.png",
-        hover: "img/black1.png"
-      }
-    },
-    {
-      id: 2,
-      name: "dirtyclub",
-      price: 48.00,
-      category: "hoodies",
-      tag: "New",
-      desc: "Vintage-washed zip-up in heavyweight fleece. Script 'Peace' embroidery across the chest with distressed paint-splatter detailing throughout.",
-      sizes: ["XS","S","M","L","XL"],
+      desc: `Heavyweight washed fleece zip-up hoodie.
+
+• True to size
+• 100% cotton
+• Sun-fade wash
+• Distressed detailing
+• Custom neck tag`,
+      sizes: ["S","M","L","XL","XXL"],
       soldOut: [],
-      images: {
-        default: "img/white.png",
-        hover: "img/whitew.png"
-      }
-    },
+      colors: [
+        { name: "Black", key: "black", dotClass: "dot-black", images: { default: "img/black.png", hover: "img/black1.png" } },
+        { name: "White", key: "white", dotClass: "dot-white", images: { default: "img/white.png", hover: "img/whitew.png" } },
+      ]
+    }
   ];
 
-  // ─── STATE ───────────────────────────────────────────────────────────────────
+  // ─── STATE ────────────────────────────────────────────────────────────────────
   let cart = [];
   let activeFilter = "all";
   let currentProduct = null;
+  let selectedColor = null;
   let selectedSize = null;
 
-  // ─── RENDER GRID ─────────────────────────────────────────────────────────────
+  // ─── RENDER GRID ──────────────────────────────────────────────────────────────
   function renderGrid() {
     const grid = document.getElementById("productGrid");
     grid.innerHTML = "";
@@ -767,22 +642,30 @@
       : products.filter(p => p.category === activeFilter);
 
     if (!filtered.length) {
-      grid.innerHTML = `
-        <div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--mid);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;">
-          No products found
-        </div>`;
+      grid.innerHTML = `<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--mid);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;">No products found</div>`;
       return;
     }
 
     filtered.forEach(p => {
+      const defaultColor = p.colors[0];
+
       const el = document.createElement("div");
       el.className = "card";
+      el.dataset.activeColor = "0";
 
       el.innerHTML = `
         ${p.tag ? `<div class="card-tag">${p.tag}</div>` : ""}
         <div class="img-placeholder">
-          <img src="${p.images.default}" class="img-default" alt="${p.name}">
-          <img src="${p.images.hover}" class="img-hover" alt="${p.name}">
+          <img src="${defaultColor.images.default}" class="img-default card-img-default" alt="${p.name}">
+          <img src="${defaultColor.images.hover}" class="img-hover card-img-hover" alt="${p.name}">
+        </div>
+        <div class="card-colors">
+          ${p.colors.map((c, i) => `
+            <div class="color-swatch ${c.dotClass} ${i === 0 ? 'active' : ''}"
+              data-color-index="${i}"
+              title="${c.name}"
+            ></div>
+          `).join("")}
         </div>
         <button class="card-add" aria-label="Quick add ${p.name}">+</button>
         <div class="card-info">
@@ -791,62 +674,90 @@
         </div>
       `;
 
-      el.querySelector(".img-placeholder").addEventListener("click", () => openModal(p.id));
-      el.querySelector(".card-name").addEventListener("click", () => openModal(p.id));
+      el.querySelectorAll(".color-swatch").forEach(swatch => {
+        swatch.addEventListener("click", e => {
+          e.stopPropagation();
+          const idx = parseInt(swatch.dataset.colorIndex);
+          const color = p.colors[idx];
+          el.querySelectorAll(".color-swatch").forEach(s => s.classList.remove("active"));
+          swatch.classList.add("active");
+          el.querySelector(".card-img-default").src = color.images.default;
+          el.querySelector(".card-img-hover").src = color.images.hover;
+          el.dataset.activeColor = idx;
+        });
+      });
+
+      el.querySelector(".img-placeholder").addEventListener("click", () => openModal(p.id, parseInt(el.dataset.activeColor)));
+      el.querySelector(".card-name").addEventListener("click", () => openModal(p.id, parseInt(el.dataset.activeColor)));
       el.querySelector(".card-add").addEventListener("click", e => {
         e.stopPropagation();
-        openModal(p.id);
+        openModal(p.id, parseInt(el.dataset.activeColor));
       });
 
       grid.appendChild(el);
     });
   }
 
-  // ─── MODAL ───────────────────────────────────────────────────────────────────
-  function openModal(id) {
+  // ─── MODAL ────────────────────────────────────────────────────────────────────
+  function openModal(id, preselectedColorIdx = 0) {
     const p = products.find(x => x.id === id);
     if (!p) return;
 
     currentProduct = p;
     selectedSize = null;
+    selectedColor = null;
 
     document.getElementById("modalTag").textContent = p.category.toUpperCase();
     document.getElementById("modalName").textContent = p.name;
     document.getElementById("modalPrice").textContent = `$${p.price.toFixed(2)}`;
     document.getElementById("modalDesc").textContent = p.desc;
+    document.getElementById("colorLabel").textContent = "—";
+    document.getElementById("sizeLabel").textContent = "—";
 
-    const modalImg = document.getElementById("modalImg");
-    modalImg.innerHTML = `
-      <img 
-        src="${p.images.default}" 
-        alt="${p.name}" 
-        id="modalProductImage"
-        style="width:100%;height:100%;object-fit:cover;"
-      >
-    `;
-
+    const modalImgWrap = document.getElementById("modalImg");
+    const startColor = p.colors[preselectedColorIdx];
+    modalImgWrap.innerHTML = `<img id="modalProductImage" src="${startColor.images.default}" alt="${p.name}">`;
     const imgEl = document.getElementById("modalProductImage");
-    imgEl.addEventListener("mouseenter", () => imgEl.src = p.images.hover);
-    imgEl.addEventListener("mouseleave", () => imgEl.src = p.images.default);
+    imgEl.addEventListener("mouseenter", () => {
+      if (selectedColor) imgEl.src = selectedColor.images.hover;
+    });
+    imgEl.addEventListener("mouseleave", () => {
+      if (selectedColor) imgEl.src = selectedColor.images.default;
+    });
+
+    const colorGrid = document.getElementById("colorGrid");
+    colorGrid.innerHTML = "";
+    p.colors.forEach((c, i) => {
+      const btn = document.createElement("button");
+      btn.className = "modal-color-btn";
+      btn.innerHTML = `<span class="dot ${c.dotClass}"></span>${c.name}`;
+      btn.addEventListener("click", () => {
+        colorGrid.querySelectorAll(".modal-color-btn").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedColor = c;
+        document.getElementById("colorLabel").textContent = c.name;
+        imgEl.src = c.images.default;
+      });
+      colorGrid.appendChild(btn);
+      if (i === preselectedColorIdx) btn.click();
+    });
 
     const sizeGrid = document.getElementById("sizeGrid");
     sizeGrid.innerHTML = "";
-
     p.sizes.forEach(s => {
       const btn = document.createElement("button");
       btn.className = "size-btn" + (p.soldOut.includes(s) ? " sold-out" : "");
       btn.textContent = s;
-
       if (!p.soldOut.includes(s)) {
         btn.addEventListener("click", () => {
-          document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("selected"));
+          sizeGrid.querySelectorAll(".size-btn").forEach(b => b.classList.remove("selected"));
           btn.classList.add("selected");
           selectedSize = s;
+          document.getElementById("sizeLabel").textContent = s;
         });
       } else {
         btn.disabled = true;
       }
-
       sizeGrid.appendChild(btn);
     });
 
@@ -858,6 +769,7 @@
     document.getElementById("modalOverlay").classList.remove("open");
     document.body.style.overflow = "";
     currentProduct = null;
+    selectedColor = null;
     selectedSize = null;
   }
 
@@ -868,37 +780,48 @@
 
   function addFromModal() {
     if (!currentProduct) return;
-
-    if (!selectedSize) return;
-
-    addToCart(currentProduct, selectedSize);
+    if (!selectedColor) { showToast("Please select a color"); return; }
+    if (!selectedSize) { showToast("Please select a size"); return; }
+    addToCart(currentProduct, selectedColor, selectedSize);
     closeModal();
   }
 
-  // ─── CART ────────────────────────────────────────────────────────────────────
-  function addToCart(product, size) {
-    const key = `${product.id}-${size}`;
+  // ─── CART ─────────────────────────────────────────────────────────────────────
+  function addToCart(product, color, size) {
+    const key = `${product.id}-${color.key}-${size}`;
     const existing = cart.find(i => i.key === key);
-
     if (existing) existing.qty++;
-    else cart.push({ key, product, size, qty: 1 });
-
+    else cart.push({ key, product, color, size, qty: 1 });
+    saveCart();
     updateCart();
-    showToast(`${product.name} (${size}) added`);
+    showToast(`${product.name} · ${color.name} · ${size} added`);
   }
 
   function removeFromCart(key) {
     cart = cart.filter(i => i.key !== key);
+    saveCart();
     updateCart();
   }
 
   function changeQty(key, delta) {
     const item = cart.find(i => i.key === key);
     if (!item) return;
-
     item.qty += delta;
     if (item.qty <= 0) removeFromCart(key);
-    else updateCart();
+    else { saveCart(); updateCart(); }
+  }
+
+  // ─── LOCALSTORAGE SYNC ────────────────────────────────────────────────────────
+  function saveCart() {
+    try {
+      localStorage.setItem('dirtyclub_cart', JSON.stringify(cart));
+    } catch(e) {}
+  }
+
+  // ─── CHECKOUT REDIRECT ────────────────────────────────────────────────────────
+  function goToCheckout() {
+    saveCart();
+    window.location.href = 'checkout.html';
   }
 
   function updateCart() {
@@ -917,18 +840,16 @@
     }
 
     itemsEl.innerHTML = "";
-
     cart.forEach(item => {
       const el = document.createElement("div");
       el.className = "cart-item";
-
       el.innerHTML = `
         <div class="cart-item-thumb">
-          <img src="${item.product.images.default}" style="width:100%;height:100%;object-fit:cover;">
+          <img src="${item.color.images.default}" alt="${item.product.name}">
         </div>
         <div>
           <div class="cart-item-name">${item.product.name}</div>
-          <div class="cart-item-size">Size: ${item.size}</div>
+          <div class="cart-item-meta">${item.color.name} · Size ${item.size}</div>
           <div class="cart-item-qty">
             <button class="qty-btn" onclick="changeQty('${item.key}',-1)">−</button>
             <span class="qty-num">${item.qty}</span>
@@ -938,7 +859,6 @@
         </div>
         <div class="cart-item-price">$${(item.product.price * item.qty).toFixed(2)}</div>
       `;
-
       itemsEl.appendChild(el);
     });
 
@@ -947,7 +867,7 @@
     footer.style.display = "block";
   }
 
-  // ─── FILTERS ─────────────────────────────────────────────────────────────────
+  // ─── FILTERS ──────────────────────────────────────────────────────────────────
   document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -957,7 +877,7 @@
     });
   });
 
-  // ─── TOAST ───────────────────────────────────────────────────────────────────
+  // ─── TOAST ────────────────────────────────────────────────────────────────────
   function showToast(msg) {
     const t = document.getElementById("toast");
     t.textContent = msg;
@@ -966,29 +886,25 @@
     t._timer = setTimeout(() => t.classList.remove("show"), 2200);
   }
 
-  // ─── CART SIDEBAR OPEN / CLOSE (FIX ADDED) ──────────────────────────────────
-  const cartIcon = document.getElementById("cartIcon");
-  const cartSidebar = document.getElementById("cartSidebar");
-  const cartOverlay = document.getElementById("cartOverlay");
-  const cartClose = document.getElementById("cartClose");
-
-  cartIcon.addEventListener("click", () => {
-    cartSidebar.classList.add("open");
-    cartOverlay.classList.add("open");
+  // ─── CART OPEN / CLOSE ────────────────────────────────────────────────────────
+  document.getElementById("cartIcon").addEventListener("click", () => {
+    document.getElementById("cartSidebar").classList.add("open");
+    document.getElementById("cartOverlay").classList.add("open");
     document.body.style.overflow = "hidden";
   });
 
   function closeCart() {
-    cartSidebar.classList.remove("open");
-    cartOverlay.classList.remove("open");
+    document.getElementById("cartSidebar").classList.remove("open");
+    document.getElementById("cartOverlay").classList.remove("open");
     document.body.style.overflow = "";
   }
 
-  cartClose.addEventListener("click", closeCart);
-  cartOverlay.addEventListener("click", closeCart);
+  document.getElementById("cartClose").addEventListener("click", closeCart);
+  document.getElementById("cartOverlay").addEventListener("click", closeCart);
 
   // ─── INIT ─────────────────────────────────────────────────────────────────────
   renderGrid();
 </script>
+
 </body>
 </html>
