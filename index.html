@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>DIRTY CLUB</title>
-  <!-- CRITICAL: user-scalable=no + maximum-scale=1 prevents iOS zoom on input focus -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="icon" type="image/png" href="./img/logo11.png" />
   <meta name="description" content="DIRTY CLUB — a unique brand owned and created by Khun Ricky.">
@@ -18,17 +17,25 @@
       --muted: #8a8070;
     }
 
-    html, body {
-      width: 100%;
-      min-height: 100%;
+    html {
       height: 100%;
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+    }
+
+    body {
+      width: 100%;
       background: var(--cream);
       font-family: 'Share Tech Mono', monospace;
       color: var(--dark);
       overflow: hidden;
+      position: fixed;
+      /* Use dvh for modern iOS, fallback to 100% */
+      height: 100dvh;
     }
 
-    /* grain overlay */
+    /* grain */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -62,7 +69,7 @@
       z-index: 8999;
     }
 
-    /* LOCKED/UNLOCKED tag */
+    /* LOCKED tag */
     #locked-tag {
       position: fixed; top: 15px; right: 22px;
       font-size: 10px; letter-spacing: 0.18em;
@@ -92,13 +99,21 @@
 
     /* ══ LOCK SCREEN ══ */
     #lock-screen {
-      position: fixed; inset: 0;
+      position: fixed;
+      /* Use JS-set pixel values so keyboard cannot affect layout */
+      top: 0; left: 0; right: 0;
       background: var(--cream);
       z-index: 5000;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 20px 50px;
       transition: opacity 0.7s ease, visibility 0.7s ease;
+      /* Force GPU layer — prevents any reflow from keyboard */
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      will-change: opacity;
     }
     #lock-screen.hide {
       opacity: 0; visibility: hidden; pointer-events: none;
@@ -106,14 +121,16 @@
 
     /* 3D tilt wrapper */
     #logo-3d-wrap {
-      width: min(240px, 60vw);
-      height: min(240px, 60vw);
-      margin-bottom: 36px;
+      width: min(220px, 58vw);
+      height: min(220px, 58vw);
+      margin-bottom: 40px;
       perspective: 700px;
       cursor: grab;
       display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
     #logo-3d-wrap:active { cursor: grabbing; }
+
     #lock-logo {
       width: 100%; height: auto;
       display: block;
@@ -130,44 +147,53 @@
       text-transform: uppercase; color: var(--muted);
       margin-bottom: 16px;
       text-align: center;
+      flex-shrink: 0;
     }
 
     .pw-row {
       display: flex; align-items: stretch; gap: 0;
       border: 1px solid rgba(26,18,8,0.22);
       overflow: hidden;
-      width: min(280px, 90vw);
+      width: min(280px, 86vw);
+      flex-shrink: 0;
     }
+
     #pw-input {
-      background: transparent; border: none; outline: none;
+      background: transparent;
+      border: none;
+      outline: none;
       font-family: 'Share Tech Mono', monospace;
-      /* KEY FIX: font-size >= 16px prevents iOS from zooming on focus */
+      /* 16px = iOS magic number that prevents auto-zoom */
       font-size: 16px;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.15em;
       color: var(--dark);
-      padding: 12px 16px;
+      padding: 13px 16px;
       flex: 1;
       min-width: 0;
-      /* Also disable user-scalable text resize */
       -webkit-text-size-adjust: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      /* Prevent scroll on focus */
+      touch-action: manipulation;
     }
     #pw-input::placeholder {
       color: var(--muted);
       letter-spacing: 0.12em;
       font-size: 14px;
     }
+
     #pw-submit {
       background: var(--dark); border: none; cursor: pointer;
-      padding: 12px 16px; color: var(--cream);
+      padding: 13px 18px; color: var(--cream);
       font-family: 'Share Tech Mono', monospace;
       font-size: 11px; letter-spacing: 0.2em;
-      text-transform: uppercase; transition: background 0.2s;
+      text-transform: uppercase;
+      transition: background 0.2s;
       white-space: nowrap;
-      /* Prevent tap highlight on mobile */
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
-    #pw-submit:hover { background: var(--red); }
-    #pw-submit:active { background: var(--red); }
+    #pw-submit:hover, #pw-submit:active { background: var(--red); }
 
     #pw-error {
       font-size: 9px; letter-spacing: 0.22em;
@@ -175,6 +201,8 @@
       opacity: 0; transition: opacity 0.3s;
       text-transform: uppercase;
       text-align: center;
+      flex-shrink: 0;
+      height: 14px;
     }
     #pw-error.show { opacity: 1; }
 
@@ -189,7 +217,8 @@
 
     /* ══ MAIN SITE ══ */
     main {
-      min-height: 100vh;
+      position: fixed;
+      inset: 0;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 50px 20px 50px;
@@ -209,9 +238,7 @@
       display: block;
       transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
     }
-    .logo-img:hover {
-      transform: scale(1.04) rotate(-1deg);
-    }
+    .logo-img:hover { transform: scale(1.04) rotate(-1deg); }
 
     nav {
       display: flex; flex-direction: column;
@@ -251,13 +278,8 @@
     .socials a:hover { color: var(--red); transform: translateY(-2px); }
     .socials svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; }
 
-    /* staggered reveal after unlock */
-    .reveal {
-      opacity: 0; transform: translateY(10px);
-    }
-    main.unlocked .reveal {
-      animation: fadeUp 0.55s ease forwards;
-    }
+    .reveal { opacity: 0; transform: translateY(10px); }
+    main.unlocked .reveal { animation: fadeUp 0.55s ease forwards; }
     main.unlocked .r1 { animation-delay: 0.05s; }
     main.unlocked .r2 { animation-delay: 0.18s; }
     main.unlocked .r3 { animation-delay: 0.28s; }
@@ -302,6 +324,7 @@
         autocorrect="off"
         autocapitalize="off"
         spellcheck="false"
+        inputmode="text"
       />
       <button id="pw-submit">Enter</button>
     </div>
@@ -311,26 +334,20 @@
   <!-- MAIN SITE -->
   <main id="main-site">
     <img class="logo-img reveal r1" src="./img/logo11.png" alt="Dirty Club" />
-
     <nav class="reveal r2">
       <a href="#">Home</a>
       <a href="product.html">Product</a>
       <a href="#">Contact</a>
       <a href="#">Lookbook</a>
     </nav>
-
     <a href="#" class="waitlist reveal r3">Join Our Waitlist</a>
-
     <div class="socials reveal r4">
-      <!-- Instagram -->
       <a href="https://www.instagram.com/dirtyclub.official?igsh=Z2hsNHkxOGd5bW9u" aria-label="Instagram">
         <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
       </a>
-      <!-- TikTok -->
       <a href="https://www.tiktok.com/@dirtyclub.official" aria-label="TikTok">
         <svg viewBox="0 0 24 24" stroke="none" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
       </a>
-      <!-- Facebook -->
       <a href="https://www.facebook.com/dirtyclub.official" aria-label="Facebook">
         <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
       </a>
@@ -338,7 +355,7 @@
   </main>
 
 <script>
-  // Timestamp
+  // ── Timestamp ──
   const tsEl = document.getElementById('timestamp');
   function pad(n){ return String(n).padStart(2,'0'); }
   (function tick(){
@@ -346,6 +363,35 @@
     tsEl.textContent = `${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
     requestAnimationFrame(tick);
   })();
+
+  // ── Freeze lock screen height so keyboard can't push/resize it ──
+  const lockScreen = document.getElementById('lock-screen');
+
+  function freezeLayout() {
+    // Capture the real viewport height BEFORE keyboard opens
+    const h = window.innerHeight;
+    lockScreen.style.height = h + 'px';
+  }
+
+  // Set on load
+  freezeLayout();
+
+  // On iOS, the keyboard triggers visualViewport resize.
+  // We deliberately do NOT update lockScreen height on those events.
+  // The fixed height keeps everything locked in place.
+
+  // Only re-freeze on orientation change (not keyboard pop)
+  window.addEventListener('orientationchange', () => {
+    // Small delay to let browser settle after rotation
+    setTimeout(freezeLayout, 300);
+  });
+
+  // Blur input when keyboard "Enter" is pressed to dismiss keyboard cleanly
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      this.blur();
+    }
+  });
 
   // ── 3D tilt logo ──
   (function(){
@@ -368,56 +414,37 @@
     }
 
     wrap.addEventListener('mousedown', e => {
-      isDragging = true;
-      lastX = e.clientX; lastY = e.clientY;
-      velX = velY = 0;
-      cancelAnimationFrame(rafId);
-      wrap.style.cursor = 'grabbing';
-      e.preventDefault();
+      isDragging = true; lastX = e.clientX; lastY = e.clientY;
+      velX = velY = 0; cancelAnimationFrame(rafId);
+      wrap.style.cursor = 'grabbing'; e.preventDefault();
     });
-
     window.addEventListener('mousemove', e => {
       if (!isDragging) return;
-      const dx = e.clientX - lastX;
-      const dy = e.clientY - lastY;
-      velY = dx * 0.45;
-      velX = -dy * 0.45;
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      velY = dx * 0.45; velX = -dy * 0.45;
       rotY = Math.max(-MAX_TILT, Math.min(MAX_TILT, rotY + velY));
       rotX = Math.max(-MAX_TILT, Math.min(MAX_TILT, rotX + velX));
       lastX = e.clientX; lastY = e.clientY;
       applyTransform(rotX, rotY, MAX_LIFT);
     });
-
     window.addEventListener('mouseup', () => {
       if (!isDragging) return;
-      isDragging = false;
-      wrap.style.cursor = 'grab';
-      inertia();
+      isDragging = false; wrap.style.cursor = 'grab'; inertia();
     });
-
     wrap.addEventListener('touchstart', e => {
-      isDragging = true;
-      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-      velX = velY = 0;
-      cancelAnimationFrame(rafId);
+      isDragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+      velX = velY = 0; cancelAnimationFrame(rafId);
     }, { passive: true });
-
     wrap.addEventListener('touchmove', e => {
       if (!isDragging) return;
-      const dx = e.touches[0].clientX - lastX;
-      const dy = e.touches[0].clientY - lastY;
-      velY = dx * 0.45;
-      velX = -dy * 0.45;
+      const dx = e.touches[0].clientX - lastX, dy = e.touches[0].clientY - lastY;
+      velY = dx * 0.45; velX = -dy * 0.45;
       rotY = Math.max(-MAX_TILT, Math.min(MAX_TILT, rotY + velY));
       rotX = Math.max(-MAX_TILT, Math.min(MAX_TILT, rotX + velX));
       lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
       applyTransform(rotX, rotY, MAX_LIFT);
     }, { passive: true });
-
-    wrap.addEventListener('touchend', () => {
-      isDragging = false;
-      inertia();
-    });
+    wrap.addEventListener('touchend', () => { isDragging = false; inertia(); });
 
     function inertia() {
       cancelAnimationFrame(rafId);
@@ -437,18 +464,16 @@
       }
       rafId = requestAnimationFrame(step);
     }
-
     applyTransform(0, 0, 1);
   })();
 
   // ── Password gate ──
   const PASSWORD = 'smoke420';
-  const lockScreen = document.getElementById('lock-screen');
-  const mainSite   = document.getElementById('main-site');
-  const pwInput    = document.getElementById('pw-input');
-  const pwSubmit   = document.getElementById('pw-submit');
-  const pwError    = document.getElementById('pw-error');
-  const lockedTag  = document.getElementById('locked-tag');
+  const mainSite  = document.getElementById('main-site');
+  const pwInput   = document.getElementById('pw-input');
+  const pwSubmit  = document.getElementById('pw-submit');
+  const pwError   = document.getElementById('pw-error');
+  const lockedTag = document.getElementById('locked-tag');
 
   function tryUnlock() {
     if (pwInput.value.toLowerCase() === PASSWORD.toLowerCase()) {
@@ -469,7 +494,14 @@
   }
 
   pwSubmit.addEventListener('click', tryUnlock);
-  pwInput.addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+  // Enter key both unlocks AND blurs keyboard
+  pwInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      tryUnlock();
+      pwInput.blur();
+    }
+  });
 
   // subtle glitch
   setInterval(()=>{
