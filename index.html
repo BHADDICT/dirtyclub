@@ -2,12 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
- <title>DIRTY CLUB</title>
-
-  <!-- Logo / Favicon -->
+  <title>DIRTY CLUB</title>
+  <!-- CRITICAL: user-scalable=no + maximum-scale=1 prevents iOS zoom on input focus -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="icon" type="image/png" href="./img/logo11.png" />
-
-  <!-- Meta Description -->
   <meta name="description" content="DIRTY CLUB — a unique brand owned and created by Khun Ricky.">
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
@@ -21,29 +19,16 @@
     }
 
     html, body {
-      width: 100%; height: 100%;
+      width: 100%;
+      min-height: 100%;
+      height: 100%;
       background: var(--cream);
       font-family: 'Share Tech Mono', monospace;
       color: var(--dark);
       overflow: hidden;
     }
-input[type="password"] {
-  font-size: 16px;        /* prevents iOS from shrinking text */
-  padding: 10px 12px;
-  width: 200px;           /* or 100% if you want full width */
-  max-width: 300px;
-  border: 1px solid #000;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
 
-/* Optional: make the button match nicely */
-button {
-  padding: 10px 15px;
-  font-size: 16px;
-  cursor: pointer;
-}
-    /* grain */
+    /* grain overlay */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -112,6 +97,7 @@ button {
       z-index: 5000;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
+      padding: 20px;
       transition: opacity 0.7s ease, visibility 0.7s ease;
     }
     #lock-screen.hide {
@@ -120,7 +106,8 @@ button {
 
     /* 3D tilt wrapper */
     #logo-3d-wrap {
-      width: 240px; height: 240px;
+      width: min(240px, 60vw);
+      height: min(240px, 60vw);
       margin-bottom: 36px;
       perspective: 700px;
       cursor: grab;
@@ -128,14 +115,13 @@ button {
     }
     #logo-3d-wrap:active { cursor: grabbing; }
     #lock-logo {
-      width: 220px; height: auto;
+      width: 100%; height: auto;
       display: block;
       transform-style: preserve-3d;
       transform: rotateX(0deg) rotateY(0deg) scale(1);
-      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+      transition: transform 0.08s ease-out, filter 0.08s ease-out;
       border-radius: 50%;
       will-change: transform;
-      /* subtle drop shadow for the "pop" feeling */
       filter: drop-shadow(0px 8px 24px rgba(0,0,0,0.18));
     }
 
@@ -143,35 +129,52 @@ button {
       font-size: 9px; letter-spacing: 0.38em;
       text-transform: uppercase; color: var(--muted);
       margin-bottom: 16px;
+      text-align: center;
     }
 
     .pw-row {
       display: flex; align-items: stretch; gap: 0;
       border: 1px solid rgba(26,18,8,0.22);
       overflow: hidden;
+      width: min(280px, 90vw);
     }
     #pw-input {
       background: transparent; border: none; outline: none;
       font-family: 'Share Tech Mono', monospace;
-      font-size: 12px; letter-spacing: 0.28em;
-      color: var(--dark); padding: 10px 16px;
-      width: 170px;
+      /* KEY FIX: font-size >= 16px prevents iOS from zooming on focus */
+      font-size: 16px;
+      letter-spacing: 0.18em;
+      color: var(--dark);
+      padding: 12px 16px;
+      flex: 1;
+      min-width: 0;
+      /* Also disable user-scalable text resize */
+      -webkit-text-size-adjust: 100%;
     }
-    #pw-input::placeholder { color: var(--muted); letter-spacing: 0.18em; font-size: 11px; }
+    #pw-input::placeholder {
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      font-size: 14px;
+    }
     #pw-submit {
       background: var(--dark); border: none; cursor: pointer;
-      padding: 10px 16px; color: var(--cream);
+      padding: 12px 16px; color: var(--cream);
       font-family: 'Share Tech Mono', monospace;
-      font-size: 10px; letter-spacing: 0.2em;
+      font-size: 11px; letter-spacing: 0.2em;
       text-transform: uppercase; transition: background 0.2s;
+      white-space: nowrap;
+      /* Prevent tap highlight on mobile */
+      -webkit-tap-highlight-color: transparent;
     }
     #pw-submit:hover { background: var(--red); }
+    #pw-submit:active { background: var(--red); }
 
     #pw-error {
       font-size: 9px; letter-spacing: 0.22em;
       color: var(--red); margin-top: 14px;
       opacity: 0; transition: opacity 0.3s;
       text-transform: uppercase;
+      text-align: center;
     }
     #pw-error.show { opacity: 1; }
 
@@ -184,7 +187,7 @@ button {
     }
     .shake { animation: shake 0.38s ease; }
 
-    /* ══ MAIN SITE — matches reference exactly ══ */
+    /* ══ MAIN SITE ══ */
     main {
       min-height: 100vh;
       display: flex; flex-direction: column;
@@ -199,13 +202,11 @@ button {
       pointer-events: all;
     }
 
-    /* flat logo — centered, same proportion as reference */
     .logo-img {
-      width: 200px;
+      width: min(200px, 55vw);
       height: auto;
       margin-bottom: 48px;
       display: block;
-      /* subtle hover wiggle */
       transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
     }
     .logo-img:hover {
@@ -245,6 +246,7 @@ button {
       color: var(--dark);
       transition: color 0.2s, transform 0.2s;
       display: flex; align-items: center;
+      -webkit-tap-highlight-color: transparent;
     }
     .socials a:hover { color: var(--red); transform: translateY(-2px); }
     .socials svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; }
@@ -262,21 +264,6 @@ button {
     main.unlocked .r4 { animation-delay: 0.38s; }
 
     @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
-    /* Mobile responsiveness */
-@media (max-width: 600px) {
-  nav {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  nav a {
-    font-size: 14px;
-  }
-
-  .logo-img {
-    max-width: 140px;
-  }
-}
   </style>
 </head>
 <body>
@@ -299,20 +286,29 @@ button {
     </div>
   </div>
 
-  <!-- ══ LOCK SCREEN with 3D spinning logo ══ -->
+  <!-- LOCK SCREEN -->
   <div id="lock-screen">
     <div id="logo-3d-wrap">
       <img id="lock-logo" src="./img/logo11.png" alt="Dirty Club" />
     </div>
     <div class="lock-label">Enter password to access</div>
     <div class="pw-row">
-      <input id="pw-input" type="password" placeholder="password" maxlength="30" autocomplete="off" />
+      <input
+        id="pw-input"
+        type="password"
+        placeholder="password"
+        maxlength="30"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+      />
       <button id="pw-submit">Enter</button>
     </div>
     <div id="pw-error">Wrong password</div>
   </div>
 
-  <!-- ══ MAIN SITE — flat, reference layout ══ -->
+  <!-- MAIN SITE -->
   <main id="main-site">
     <img class="logo-img reveal r1" src="./img/logo11.png" alt="Dirty Club" />
 
@@ -351,12 +347,12 @@ button {
     requestAnimationFrame(tick);
   })();
 
-  // ── 3D tilt logo (CSS perspective, no Three.js, no color change) ──
+  // ── 3D tilt logo ──
   (function(){
     const wrap = document.getElementById('logo-3d-wrap');
     const logo = document.getElementById('lock-logo');
-    const MAX_TILT = 28; // degrees
-    const MAX_LIFT = 1.10; // scale
+    const MAX_TILT = 28;
+    const MAX_LIFT = 1.10;
     let isDragging = false;
     let rotX = 0, rotY = 0;
     let velX = 0, velY = 0;
@@ -371,7 +367,6 @@ button {
       logo.style.filter = `drop-shadow(0px ${4 + lift*20}px ${blur}px rgba(0,0,0,${alpha}))`;
     }
 
-    // Mouse drag
     wrap.addEventListener('mousedown', e => {
       isDragging = true;
       lastX = e.clientX; lastY = e.clientY;
@@ -400,7 +395,6 @@ button {
       inertia();
     });
 
-    // Touch drag
     wrap.addEventListener('touchstart', e => {
       isDragging = true;
       lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
@@ -425,7 +419,6 @@ button {
       inertia();
     });
 
-    // Inertia + spring back to center
     function inertia() {
       cancelAnimationFrame(rafId);
       function step() {
@@ -445,7 +438,6 @@ button {
       rafId = requestAnimationFrame(step);
     }
 
-    // Initial settle
     applyTransform(0, 0, 1);
   })();
 
