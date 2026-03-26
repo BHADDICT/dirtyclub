@@ -27,7 +27,22 @@
       color: var(--dark);
       overflow: hidden;
     }
+input[type="password"] {
+  font-size: 16px;        /* prevents iOS from shrinking text */
+  padding: 10px 12px;
+  width: 200px;           /* or 100% if you want full width */
+  max-width: 300px;
+  border: 1px solid #000;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 
+/* Optional: make the button match nicely */
+button {
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+}
     /* grain */
     body::before {
       content: '';
@@ -247,6 +262,21 @@
     main.unlocked .r4 { animation-delay: 0.38s; }
 
     @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    /* Mobile responsiveness */
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  nav a {
+    font-size: 14px;
+  }
+
+  .logo-img {
+    max-width: 140px;
+  }
+}
   </style>
 </head>
 <body>
