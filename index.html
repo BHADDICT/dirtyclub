@@ -467,7 +467,31 @@
   .social-link { color: var(--black); transition: opacity 0.2s; display: flex; }
   .social-link:hover { opacity: 0.4; }
   .social-link svg { width: 18px; height: 18px; }
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  footer {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    padding: 20px 16px;
+  }
 
+  .footer-brand {
+    font-size: 13px;
+  }
+
+  .footer-socials {
+    order: 2;
+    gap: 20px;
+  }
+
+  .footer-copy {
+    order: 3;
+    font-size: 10px;
+  }
+}
   @media (max-width: 900px) {
     .grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; padding: 0; }
   }
@@ -611,7 +635,7 @@
       tag: "New",
       desc: `Heavyweight washed fleece zip-up hoodie.
 
-• True to size
+• slightly oversized
 • 100% cotton
 • Sun-fade wash
 • Distressed detailing
@@ -619,8 +643,11 @@
       sizes: ["S","M","L","XL","XXL"],
       soldOut: [],
       colors: [
-        { name: "Black", key: "black", dotClass: "dot-black", images: { default: "img/black.png", hover: "img/black1.png" } },
-        { name: "White", key: "white", dotClass: "dot-white", images: { default: "img/white.png", hover: "img/whitew.png" } },
+        { name: "Black", key: "black", dotClass: "dot-black", 
+        
+     images: { default: "./img/masibf.png", hover: "./img/masibb.png" } },
+        { name: "White", key: "white", dotClass: "dot-white", 
+      images: { default: "./img/masiwf.png", hover: "./img/masiwb.png" } },
       ]
     }
   ];
