@@ -415,7 +415,6 @@
       <div class="total-row"><span>Subtotal</span><span id="summarySubtotal">$0.00</span></div>
       <div class="total-row discount" id="discountRow" style="display:none;"><span>Discount</span><span id="discountVal">-$0.00</span></div>
       <div class="total-row"><span>Shipping</span><span id="summaryShipping">$2.00</span></div>
-      <div class="total-row"><span>Tax (est.)</span><span id="summaryTax">$0.00</span></div>
       <div class="total-row grand"><span>Total</span><span id="summaryTotal">$0.00</span></div>
     </div>
   </div>
@@ -507,7 +506,6 @@ const TELEGRAM_BOT_TOKEN  = "8785264238:AAFr7zsaIItrkL_n5AwLc7okNv1r8MkaCtI";
 const TELEGRAM_CHAT_ID    = "@dirtyclubofficial";
 // ═══════════════════════════════════════════════════════
 
-// ✅ FIX 1: init uses the constant
 emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
 // ── READ CART FROM localStorage ─────────────────────────
@@ -585,13 +583,12 @@ function renderSummary() {
 }
 
 function subtotal() { return cartData.reduce((s, i) => s + i.price * i.qty, 0); }
-function getTotal()  { return Math.max(0, subtotal() + shippingCost + subtotal() * 0.1 - discountAmount); }
+function getTotal()  { return Math.max(0, subtotal() + shippingCost - discountAmount); }
 
 function updateTotals() {
-  const sub = subtotal(), tax = sub * 0.1;
+  const sub = subtotal();
   document.getElementById("summarySubtotal").textContent = `$${sub.toFixed(2)}`;
   document.getElementById("summaryShipping").textContent = `$${shippingCost.toFixed(2)}`;
-  document.getElementById("summaryTax").textContent      = `$${tax.toFixed(2)}`;
   document.getElementById("summaryTotal").textContent    = `$${getTotal().toFixed(2)}`;
   const dr = document.getElementById("discountRow");
   if (discountAmount > 0) {
@@ -813,13 +810,10 @@ async function sendConfirmationEmail(orderNum) {
   ).join("\n");
 
   const sub = subtotal();
-  const tax = sub * 0.1;
   const payLabels = { qr: "ABA / KHQR Scan to Pay", card: "Credit / Debit Card", cod: "Cash on Delivery" };
   const hasDiscount = discountAmount > 0;
 
   try {
-    // ✅ FIX 2: use EMAILJS_SERVICE_ID + EMAILJS_TEMPLATE_ID constants (not bare identifiers)
-    // ✅ FIX 3: pass discount_row_style so the email template hides the row when no discount
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       order_number:       orderNum,
       customer_name:      `${document.getElementById("firstname").value.trim()} ${document.getElementById("lastname").value.trim()}`,
@@ -831,7 +825,6 @@ async function sendConfirmationEmail(orderNum) {
       order_items:        itemLines,
       subtotal:           `$${sub.toFixed(2)}`,
       shipping:           `$${shippingCost.toFixed(2)}`,
-      tax:                `$${tax.toFixed(2)}`,
       discount:           hasDiscount ? `-$${discountAmount.toFixed(2)}` : "—",
       discount_row_style: hasDiscount ? "" : "display:none;",
       total:              `$${getTotal().toFixed(2)}`,
