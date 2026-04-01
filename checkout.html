@@ -499,14 +499,14 @@
 // ═══════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════
-const EMAILJS_PUBLIC_KEY  = "U_5sHrC5ducrAQ0i7";
-const EMAILJS_SERVICE_ID  = "service_2uhhkjl";
-const EMAILJS_TEMPLATE_ID = "template_y8xzbeb";
+const EMAILJS_PUBLIC_KEY  = "JKWZesNYNTEugE8zM";
+const EMAILJS_SERVICE_ID  = "service_d41tyoi";
+const EMAILJS_TEMPLATE_ID = "template_v52hub1";
 const TELEGRAM_BOT_TOKEN  = "8785264238:AAFr7zsaIItrkL_n5AwLc7okNv1r8MkaCtI";
 const TELEGRAM_CHAT_ID    = "@dirtyclubofficial";
 // ═══════════════════════════════════════════════════════
 
-emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+emailjs.init({ publicKey: JKWZesNYNTEugE8zM });
 
 // ── READ CART FROM localStorage ─────────────────────────
 let cartData = [];
@@ -814,7 +814,7 @@ async function sendConfirmationEmail(orderNum) {
   const hasDiscount = discountAmount > 0;
 
   try {
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    await emailjs.send(service_d41tyoi, template_v52hub1, {
       order_number:       orderNum,
       customer_name:      `${document.getElementById("firstname").value.trim()} ${document.getElementById("lastname").value.trim()}`,
       customer_email:     document.getElementById("email").value.trim(),
