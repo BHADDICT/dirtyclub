@@ -108,6 +108,14 @@
   .order-item-meta { font-size: 11px; color: var(--mid); }
   .order-item-price { font-size: 13px; font-weight: 500; }
 
+  /* FREE ITEM styles */
+  .order-item.free-item { background: #fbfdf0; border: 1px solid var(--accent); padding: 6px 8px; }
+  .order-item.free-item .order-item-price { color: #2a9d2a; }
+  .free-badge { display: inline-block; background: var(--accent); color: var(--black); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; padding: 2px 6px; margin-top: 3px; }
+  .free-item-banner { background: var(--accent); color: var(--black); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; padding: 7px 14px; margin-bottom: 16px; display: none; align-items: center; gap: 8px; }
+  .free-item-banner.show { display: flex; }
+  .free-item-banner svg { width: 13px; height: 13px; fill: none; stroke: var(--black); stroke-width: 2; flex-shrink: 0; }
+
   .promo-row { display: flex; margin-bottom: 20px; border: 1px solid #ddd; }
   .promo-input { flex: 1; border: none; padding: 11px 14px; font-family: var(--font-body); font-size: 12px; letter-spacing: 0.06em; background: transparent; color: var(--black); outline: none; }
   .promo-input::placeholder { color: #bbb; }
@@ -224,8 +232,9 @@
 <div class="ticker" aria-hidden="true">
   <div class="ticker-inner">
     <span>Secure Checkout</span><span>—</span><span>dirtyclub</span><span>—</span>
-    <span>Free Shipping over $80</span><span>—</span><span>Secure Checkout</span><span>—</span>
-    <span>dirtyclub</span><span>—</span><span>Free Shipping over $80</span><span>—</span>
+    <span>Free Shipping over $80</span><span>—</span><span>Buy 2 Get 1 Free</span><span>—</span>
+    <span>Secure Checkout</span><span>—</span><span>dirtyclub</span><span>—</span>
+    <span>Free Shipping over $80</span><span>—</span><span>Buy 2 Get 1 Free</span><span>—</span>
   </div>
 </div>
 
@@ -405,6 +414,13 @@
 
   <div class="checkout-right">
     <div class="summary-title">Order Summary<span class="summary-count" id="summaryCount">0 items</span></div>
+
+    <!-- Free Item Banner — shown when B2G1 deal fires -->
+    <div class="free-item-banner" id="freeItemBanner">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      🎁 Buy 2 Get 1 Free — your free black tee is included!
+    </div>
+
     <div class="order-items" id="orderItems"></div>
     <div class="promo-row">
       <input class="promo-input" id="promoInput" type="text" placeholder="Promo / discount code">
@@ -413,7 +429,9 @@
     <div class="promo-feedback" id="promoFeedback"></div>
     <div class="totals">
       <div class="total-row"><span>Subtotal</span><span id="summarySubtotal">$0.00</span></div>
-      <div class="total-row discount" id="discountRow" style="display:none;"><span>Discount</span><span id="discountVal">-$0.00</span></div>
+      <div class="total-row discount" id="discountRow" style="display:none;">
+        <span>Promo Discount</span><span id="discountVal">-$0.00</span>
+      </div>
       <div class="total-row"><span>Shipping</span><span id="summaryShipping">$2.00</span></div>
       <div class="total-row grand"><span>Total</span><span id="summaryTotal">$0.00</span></div>
     </div>
@@ -506,8 +524,7 @@ const TELEGRAM_BOT_TOKEN  = "8785264238:AAFr7zsaIItrkL_n5AwLc7okNv1r8MkaCtI";
 const TELEGRAM_CHAT_ID    = "@dirtyclubofficial";
 // ═══════════════════════════════════════════════════════
 
-// ✅ FIX 1: publicKey must be a string (was an undefined variable before)
-emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+emailjs.init({ publicKey: JKWZesNYNTEugE8zM });
 
 // ── READ CART FROM localStorage ─────────────────────────
 let cartData = [];
@@ -547,6 +564,33 @@ let receiptFile       = null;
 let currentOrderNum   = "";
 const VALID_PROMOS    = { "DIRTY10": 10, "DC420": 15, "CLUB20": 20 };
 
+// ═══════════════════════════════════════════════════════
+// BUY 2 GET 1 FREE — Fixed Bonus Gift Item
+// -------------------------------------------------------
+// Customer pays full price for items in their cart.
+// When cart has 2+ total units, they receive 1 free
+// bonus black item shipped with their order.
+// Nothing is deducted from their cart total.
+// ═══════════════════════════════════════════════════════
+const FREE_GIFT = {
+  name:  "Dirtyclub Black Tee",  // ← update to your actual product name
+  color: "Black",
+  size:  "Free Size",
+  price: 0,                       // display only — never charged
+  img:   "",                      // ← put your image filename here e.g. "black-tee.jpg"
+  isFree: true
+};
+
+function calcFreeItems() {
+  const totalUnits = cartData.reduce((s, i) => s + i.qty, 0);
+  if (totalUnits < 2) return [];
+  return [FREE_GIFT]; // max 1 free gift per order
+}
+
+function calcFreeDiscount() {
+  return 0; // customer pays full cart price — free gift costs us nothing extra to charge
+}
+
 // ── EMPTY CART ──────────────────────────────────────────
 function checkEmptyCart() {
   if (cartData.length) return;
@@ -562,9 +606,16 @@ function checkEmptyCart() {
 // ── RENDER SUMMARY ──────────────────────────────────────
 function renderSummary() {
   const container = document.getElementById("orderItems");
-  const n = cartData.reduce((s, i) => s + i.qty, 0);
-  document.getElementById("summaryCount").textContent = `${n} item${n !== 1 ? "s" : ""}`;
+  const freeItems = calcFreeItems();
+
+  // Item count: paid items + 1 free gift (if applicable)
+  const paidCount = cartData.reduce((s, i) => s + i.qty, 0);
+  const total     = paidCount + freeItems.length;
+  document.getElementById("summaryCount").textContent = `${total} item${total !== 1 ? "s" : ""}`;
+
   container.innerHTML = "";
+
+  // Render paid items
   cartData.forEach(item => {
     const el = document.createElement("div");
     el.className = "order-item";
@@ -580,17 +631,60 @@ function renderSummary() {
       <div class="order-item-price">$${(item.price * item.qty).toFixed(2)}</div>`;
     container.appendChild(el);
   });
+
+  // Render free gift item if deal is active
+  if (freeItems.length > 0) {
+    const gift = freeItems[0];
+    const el = document.createElement("div");
+    el.className = "order-item free-item";
+    el.innerHTML = `
+      <div class="order-item-img">
+        ${gift.img
+          ? `<img src="${gift.img}" alt="${gift.name}" onerror="this.style.display='none'">`
+: `<div style="width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;">
+      <img src="./img/masibb.png" style="max-width:100%; max-height:100%; object-fit:cover;">
+   </div>`
+}
+        <div class="order-item-qty-badge" style="background:var(--accent);color:var(--black);">1</div>
+      </div>
+      <div>
+        <div class="order-item-name">${gift.name}</div>
+        <div class="order-item-meta">${gift.color} · ${gift.size}</div>
+        <div class="free-badge">🎁 Free Gift</div>
+      </div>
+      <div class="order-item-price" style="color:#2a9d2a;">FREE</div>`;
+    container.appendChild(el);
+  }
+
   updateTotals();
 }
 
-function subtotal() { return cartData.reduce((s, i) => s + i.price * i.qty, 0); }
-function getTotal()  { return Math.max(0, subtotal() + shippingCost - discountAmount); }
+function subtotal() {
+  return cartData.reduce((s, i) => s + i.price * i.qty, 0);
+}
+
+function getTotal() {
+  // Free gift adds no cost — customer pays subtotal + shipping only
+  return Math.max(0, subtotal() + shippingCost - discountAmount);
+}
 
 function updateTotals() {
-  const sub = subtotal();
+  const sub       = subtotal();
+  const freeItems = calcFreeItems();
+
   document.getElementById("summarySubtotal").textContent = `$${sub.toFixed(2)}`;
   document.getElementById("summaryShipping").textContent = `$${shippingCost.toFixed(2)}`;
   document.getElementById("summaryTotal").textContent    = `$${getTotal().toFixed(2)}`;
+
+  // Show/hide the free gift banner
+  const freeBanner = document.getElementById("freeItemBanner");
+  if (freeItems.length > 0) {
+    freeBanner.classList.add("show");
+  } else {
+    freeBanner.classList.remove("show");
+  }
+
+  // Promo code discount row
   const dr = document.getElementById("discountRow");
   if (discountAmount > 0) {
     dr.style.display = "flex";
@@ -677,13 +771,28 @@ function setStatus(text, state) {
 
 // ── TELEGRAM ────────────────────────────────────────────
 async function sendToTelegram(file, orderNum) {
-  const name    = `${document.getElementById("firstname").value.trim()} ${document.getElementById("lastname").value.trim()}`;
-  const phone   = `+855 ${document.getElementById("phone").value.trim()}`;
-  const address = `${document.getElementById("address1").value.trim()}, ${document.getElementById("province").value}`;
-  const caption = `🧾 *PAYMENT RECEIPT*\n━━━━━━━━━━━━━━\n📦 Order: \`${orderNum}\`\n👤 ${name}\n📞 ${phone}\n📍 ${address}\n💰 Total: *$${getTotal().toFixed(2)} USD*\n━━━━━━━━━━━━━━\n⏳ Awaiting verification`;
+  const name     = `${document.getElementById("firstname").value.trim()} ${document.getElementById("lastname").value.trim()}`;
+  const phone    = `+855 ${document.getElementById("phone").value.trim()}`;
+  const address  = `${document.getElementById("address1").value.trim()}, ${document.getElementById("province").value}`;
+  const freeItems = calcFreeItems();
+  const caption = [
+    `🧾 *PAYMENT RECEIPT*`,
+    `━━━━━━━━━━━━━━`,
+    `📦 Order: \`${orderNum}\``,
+    `👤 ${name}`,
+    `📞 ${phone}`,
+    `📍 ${address}`,
+    freeItems.length > 0 ? `🎁 Free Gift: ${FREE_GIFT.name} (${FREE_GIFT.color} · ${FREE_GIFT.size})` : null,
+    `💰 Total: *$${getTotal().toFixed(2)} USD*`,
+    `━━━━━━━━━━━━━━`,
+    `⏳ Awaiting verification`
+  ].filter(Boolean).join("\n");
+
   const fd = new FormData();
   const isImg = file.type.startsWith("image/");
-  fd.append("chat_id", TELEGRAM_CHAT_ID); fd.append("caption", caption); fd.append("parse_mode", "Markdown");
+  fd.append("chat_id", TELEGRAM_CHAT_ID);
+  fd.append("caption", caption);
+  fd.append("parse_mode", "Markdown");
   fd.append(isImg ? "photo" : "document", file, file.name);
   const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${isImg ? "sendPhoto" : "sendDocument"}`, { method: "POST", body: fd });
   if (!res.ok) { const e = await res.json().catch(() => {}); throw new Error(e?.description || "Telegram error"); }
@@ -806,30 +915,36 @@ async function showSuccess(orderNum) {
 }
 
 async function sendConfirmationEmail(orderNum) {
+  const freeItems   = calcFreeItems();
+  const hasDiscount = discountAmount > 0;
+
   const itemLines = cartData.map(i =>
     `${i.name} · ${i.color} · Size ${i.size} × ${i.qty}  —  $${(i.price * i.qty).toFixed(2)}`
   ).join("\n");
 
-  const sub = subtotal();
+  const freeLines = freeItems.length > 0
+    ? `\n\n🎁 FREE GIFT:\n${FREE_GIFT.name} · ${FREE_GIFT.color} · ${FREE_GIFT.size} × 1  —  FREE`
+    : "";
+
   const payLabels = { qr: "ABA / KHQR Scan to Pay", card: "Credit / Debit Card", cod: "Cash on Delivery" };
-  const hasDiscount = discountAmount > 0;
 
   try {
-    // ✅ FIX 2 & 3: service ID and template ID must be strings (using the constants)
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      order_number:       orderNum,
-      customer_name:      `${document.getElementById("firstname").value.trim()} ${document.getElementById("lastname").value.trim()}`,
-      customer_email:     document.getElementById("email").value.trim(),
-      customer_phone:     `+855 ${document.getElementById("phone").value.trim()}`,
-      shipping_address:   `${document.getElementById("address1").value.trim()}, ${document.getElementById("province").value}`,
-      delivery_notes:     document.getElementById("notes").value.trim() || "—",
-      payment_method:     payLabels[selectedPayMethod] || selectedPayMethod,
-      order_items:        itemLines,
-      subtotal:           `$${sub.toFixed(2)}`,
-      shipping:           `$${shippingCost.toFixed(2)}`,
-      discount:           hasDiscount ? `-$${discountAmount.toFixed(2)}` : "—",
-      discount_row_style: hasDiscount ? "" : "display:none;",
-      total:              `$${getTotal().toFixed(2)}`,
+    await emailjs.send(service_d41tyoi, template_v52hub1, {
+      order_number:        orderNum,
+      customer_name:       `${document.getElementById("firstname").value.trim()} ${document.getElementById("lastname").value.trim()}`,
+      customer_email:      document.getElementById("email").value.trim(),
+      customer_phone:      `+855 ${document.getElementById("phone").value.trim()}`,
+      shipping_address:    `${document.getElementById("address1").value.trim()}, ${document.getElementById("province").value}`,
+      delivery_notes:      document.getElementById("notes").value.trim() || "—",
+      payment_method:      payLabels[selectedPayMethod] || selectedPayMethod,
+      order_items:         itemLines + freeLines,
+      subtotal:            `$${subtotal().toFixed(2)}`,
+      shipping:            `$${shippingCost.toFixed(2)}`,
+      b2g1_discount:       freeItems.length > 0 ? "Free Gift Included" : "—",
+      b2g1_row_style:      freeItems.length > 0 ? "" : "display:none;",
+      discount:            hasDiscount ? `-$${discountAmount.toFixed(2)}` : "—",
+      discount_row_style:  hasDiscount ? "" : "display:none;",
+      total:               `$${getTotal().toFixed(2)}`,
     });
     console.log("✅ Email sent successfully.");
   } catch(err) {
