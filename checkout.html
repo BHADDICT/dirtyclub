@@ -112,9 +112,28 @@
   .order-item.free-item { background: #fbfdf0; border: 1px solid var(--accent); padding: 6px 8px; }
   .order-item.free-item .order-item-price { color: #2a9d2a; }
   .free-badge { display: inline-block; background: var(--accent); color: var(--black); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; padding: 2px 6px; margin-top: 3px; }
-  .free-item-banner { background: var(--accent); color: var(--black); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; padding: 7px 14px; margin-bottom: 16px; display: none; align-items: center; gap: 8px; }
+  .free-item-banner { background: var(--accent); color: var(--black); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; padding: 7px 14px; margin-bottom: 0; display: none; align-items: center; gap: 8px; }
   .free-item-banner.show { display: flex; }
   .free-item-banner svg { width: 13px; height: 13px; fill: none; stroke: var(--black); stroke-width: 2; flex-shrink: 0; }
+
+  /* ── FREE GIFT PICKER ─────────────────────────────── */
+  .gift-picker { margin-bottom: 16px; padding: 14px 16px 16px; background: #fbfdf0; border: 1px solid var(--accent); border-top: none; animation: fadeUp 0.25s ease both; }
+  .gift-picker-title { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--black); font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .gift-picker-title svg { width: 12px; height: 12px; fill: none; stroke: var(--black); stroke-width: 2.5; }
+  .gift-picker-rows { display: flex; flex-direction: column; gap: 12px; }
+  .gift-picker-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 7px; }
+  .gift-swatch-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .gift-swatch { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2.5px solid transparent; transition: border-color 0.18s, transform 0.15s, box-shadow 0.18s; position: relative; flex-shrink: 0; }
+  .gift-swatch:hover { transform: scale(1.15); }
+  .gift-swatch.active { border-color: var(--black) !important; box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--black); }
+  .gift-size-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .gift-size-btn { height: 30px; min-width: 36px; padding: 0 10px; border: 1px solid #ccc; background: transparent; font-family: var(--font-body); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; color: var(--black); }
+  .gift-size-btn:hover:not(.active) { border-color: #888; background: #f5f5f0; }
+  .gift-size-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+  .gift-divider { height: 1px; background: rgba(0,0,0,0.08); margin: 4px 0 0; }
+  .gift-selection-summary { font-size: 11px; color: var(--dim); margin-top: 10px; letter-spacing: 0.04em; display: flex; align-items: center; gap: 7px; }
+  .gift-sel-dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,0.15); flex-shrink: 0; }
+  .gift-sel-label { font-weight: 500; color: var(--black); }
 
   .promo-row { display: flex; margin-bottom: 20px; border: 1px solid #ddd; }
   .promo-input { flex: 1; border: none; padding: 11px 14px; font-family: var(--font-body); font-size: 12px; letter-spacing: 0.06em; background: transparent; color: var(--black); outline: none; }
@@ -418,8 +437,11 @@
     <!-- Free Item Banner — shown when B2G1 deal fires -->
     <div class="free-item-banner" id="freeItemBanner">
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-      🎁 Buy 2 Get 1 Free — your free black tee is included!
+      🎁 Buy 2 Get 1 Free — pick your free item below!
     </div>
+
+    <!-- Free Gift Picker — injected by JS when B2G1 deal is active -->
+    <div id="giftPickerWrap"></div>
 
     <div class="order-items" id="orderItems"></div>
     <div class="promo-row">
@@ -565,30 +587,112 @@ let currentOrderNum   = "";
 const VALID_PROMOS    = { "DIRTY10": 10, "DC420": 15, "CLUB20": 20 };
 
 // ═══════════════════════════════════════════════════════
-// BUY 2 GET 1 FREE — Fixed Bonus Gift Item
+// BUY 2 GET 1 FREE — Free Gift Config
 // -------------------------------------------------------
-// Customer pays full price for items in their cart.
-// When cart has 2+ total units, they receive 1 free
-// bonus black item shipped with their order.
+// Edit colorOptions and sizeOptions to match your actual
+// product variants. Customer selects their preference.
 // Nothing is deducted from their cart total.
 // ═══════════════════════════════════════════════════════
 const FREE_GIFT = {
-  name:  "Dirtyclub Black Tee",  // ← update to your actual product name
-  color: "Black",
-  size:  "Free Size",
-  price: 0,                       // display only — never charged
-  img:   "",                      // ← put your image filename here e.g. "black-tee.jpg"
-  isFree: true
+  name:  "Dirtyclub Black Tee",
+  price: 0,
+  img:   "",    // ← e.g. "black-tee.jpg"
+  isFree: true,
+  colorOptions: [
+    { name: "Black",   hex: "#111111" },
+    { name: "White",   hex: "#f0f0f0" },
+  
+  ],
+  sizeOptions: [ "S", "M", "L", "XL", "XXL"],
+};
+
+// Tracks the customer's live free-gift selection
+let freeGiftSelection = {
+  color: FREE_GIFT.colorOptions[0].name,
+  size:  "M"
 };
 
 function calcFreeItems() {
   const totalUnits = cartData.reduce((s, i) => s + i.qty, 0);
   if (totalUnits < 2) return [];
-  return [FREE_GIFT]; // max 1 free gift per order
+  // Return free gift with the customer's chosen color & size
+  return [{ ...FREE_GIFT, color: freeGiftSelection.color, size: freeGiftSelection.size }];
 }
 
 function calcFreeDiscount() {
-  return 0; // customer pays full cart price — free gift costs us nothing extra to charge
+  return 0; // customer pays full cart price — gift costs nothing extra
+}
+
+// ── FREE GIFT PICKER ────────────────────────────────────
+function renderGiftPicker() {
+  const wrap = document.getElementById('giftPickerWrap');
+  const freeItems = calcFreeItems();
+
+  if (!freeItems.length) {
+    wrap.innerHTML = '';
+    return;
+  }
+
+  const selColor = FREE_GIFT.colorOptions.find(c => c.name === freeGiftSelection.color);
+  const dotHex   = selColor ? selColor.hex : '#111';
+
+  const swatches = FREE_GIFT.colorOptions.map(c => `
+    <div class="gift-swatch ${freeGiftSelection.color === c.name ? 'active' : ''}"
+         data-color="${c.name}"
+         style="background:${c.hex};"
+         title="${c.name}"
+         onclick="selectGiftColor('${c.name}')"></div>
+  `).join('');
+
+  const sizes = FREE_GIFT.sizeOptions.map(s => `
+    <button class="gift-size-btn ${freeGiftSelection.size === s ? 'active' : ''}"
+            onclick="selectGiftSize('${s}')">${s}</button>
+  `).join('');
+
+  wrap.innerHTML = `
+    <div class="gift-picker">
+      <div class="gift-picker-title">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Customise Your Free Gift
+      </div>
+      <div class="gift-picker-rows">
+        <div>
+          <div class="gift-picker-label">Colour — <span style="color:var(--black);font-weight:500;">${freeGiftSelection.color}</span></div>
+          <div class="gift-swatch-group">${swatches}</div>
+        </div>
+        <div>
+          <div class="gift-picker-label">Size — <span style="color:var(--black);font-weight:500;">${freeGiftSelection.size}</span></div>
+          <div class="gift-size-group">${sizes}</div>
+        </div>
+      </div>
+      <div class="gift-divider"></div>
+      <div class="gift-selection-summary">
+        <span class="gift-sel-dot" style="background:${dotHex};"></span>
+        Free gift: <span class="gift-sel-label">${freeGiftSelection.color} · Size ${freeGiftSelection.size}</span>
+      </div>
+    </div>`;
+}
+
+function selectGiftColor(colorName) {
+  freeGiftSelection.color = colorName;
+  renderGiftPicker();          // re-render picker with updated active states
+  updateFreeItemInSummary();   // update the item row in order list
+}
+
+function selectGiftSize(size) {
+  freeGiftSelection.size = size;
+  renderGiftPicker();
+  updateFreeItemInSummary();
+}
+
+// Light update: just refresh the meta text on the free item row without full re-render
+function updateFreeItemInSummary() {
+  const metaEl = document.querySelector('.order-item.free-item .order-item-meta');
+  if (metaEl) {
+    metaEl.textContent = `${freeGiftSelection.color} · Size ${freeGiftSelection.size}`;
+  }
 }
 
 // ── EMPTY CART ──────────────────────────────────────────
@@ -608,7 +712,6 @@ function renderSummary() {
   const container = document.getElementById("orderItems");
   const freeItems = calcFreeItems();
 
-  // Item count: paid items + 1 free gift (if applicable)
   const paidCount = cartData.reduce((s, i) => s + i.qty, 0);
   const total     = paidCount + freeItems.length;
   document.getElementById("summaryCount").textContent = `${total} item${total !== 1 ? "s" : ""}`;
@@ -641,17 +744,27 @@ function renderSummary() {
       <div class="order-item-img">
         ${gift.img
           ? `<img src="${gift.img}" alt="${gift.name}" onerror="this.style.display='none'">`
-          : `<div style="width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:20px;">   <img src="./img/masibb.png" style="max-width:100%; max-height:100%; object-fit:cover;"></div>`
+          : `<div style="width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:20px;"><img src="./img/masibb.png" style="max-width:100%;max-height:100%;object-fit:cover;"></div>`
         }
         <div class="order-item-qty-badge" style="background:var(--accent);color:var(--black);">1</div>
       </div>
       <div>
         <div class="order-item-name">${gift.name}</div>
-        <div class="order-item-meta">${gift.color} · ${gift.size}</div>
+        <div class="order-item-meta">${freeGiftSelection.color} · Size ${freeGiftSelection.size}</div>
         <div class="free-badge">🎁 Free Gift</div>
       </div>
       <div class="order-item-price" style="color:#2a9d2a;">FREE</div>`;
     container.appendChild(el);
+  }
+
+  // Show/hide banner & picker
+  const freeBanner = document.getElementById("freeItemBanner");
+  if (freeItems.length > 0) {
+    freeBanner.classList.add("show");
+    renderGiftPicker();
+  } else {
+    freeBanner.classList.remove("show");
+    document.getElementById("giftPickerWrap").innerHTML = '';
   }
 
   updateTotals();
@@ -662,27 +775,15 @@ function subtotal() {
 }
 
 function getTotal() {
-  // Free gift adds no cost — customer pays subtotal + shipping only
   return Math.max(0, subtotal() + shippingCost - discountAmount);
 }
 
 function updateTotals() {
-  const sub       = subtotal();
-  const freeItems = calcFreeItems();
-
+  const sub = subtotal();
   document.getElementById("summarySubtotal").textContent = `$${sub.toFixed(2)}`;
   document.getElementById("summaryShipping").textContent = `$${shippingCost.toFixed(2)}`;
   document.getElementById("summaryTotal").textContent    = `$${getTotal().toFixed(2)}`;
 
-  // Show/hide the free gift banner
-  const freeBanner = document.getElementById("freeItemBanner");
-  if (freeItems.length > 0) {
-    freeBanner.classList.add("show");
-  } else {
-    freeBanner.classList.remove("show");
-  }
-
-  // Promo code discount row
   const dr = document.getElementById("discountRow");
   if (discountAmount > 0) {
     dr.style.display = "flex";
@@ -769,9 +870,9 @@ function setStatus(text, state) {
 
 // ── TELEGRAM ────────────────────────────────────────────
 async function sendToTelegram(file, orderNum) {
-  const name     = `${document.getElementById("firstname").value.trim()} ${document.getElementById("lastname").value.trim()}`;
-  const phone    = `+855 ${document.getElementById("phone").value.trim()}`;
-  const address  = `${document.getElementById("address1").value.trim()}, ${document.getElementById("province").value}`;
+  const name      = `${document.getElementById("firstname").value.trim()} ${document.getElementById("lastname").value.trim()}`;
+  const phone     = `+855 ${document.getElementById("phone").value.trim()}`;
+  const address   = `${document.getElementById("address1").value.trim()}, ${document.getElementById("province").value}`;
   const freeItems = calcFreeItems();
   const caption = [
     `🧾 *PAYMENT RECEIPT*`,
@@ -780,7 +881,9 @@ async function sendToTelegram(file, orderNum) {
     `👤 ${name}`,
     `📞 ${phone}`,
     `📍 ${address}`,
-    freeItems.length > 0 ? `🎁 Free Gift: ${FREE_GIFT.name} (${FREE_GIFT.color} · ${FREE_GIFT.size})` : null,
+    freeItems.length > 0
+      ? `🎁 Free Gift: ${FREE_GIFT.name} (${freeGiftSelection.color} · Size ${freeGiftSelection.size})`
+      : null,
     `💰 Total: *$${getTotal().toFixed(2)} USD*`,
     `━━━━━━━━━━━━━━`,
     `⏳ Awaiting verification`
@@ -921,7 +1024,7 @@ async function sendConfirmationEmail(orderNum) {
   ).join("\n");
 
   const freeLines = freeItems.length > 0
-    ? `\n\n🎁 FREE GIFT:\n${FREE_GIFT.name} · ${FREE_GIFT.color} · ${FREE_GIFT.size} × 1  —  FREE`
+    ? `\n\n🎁 FREE GIFT:\n${FREE_GIFT.name} · ${freeGiftSelection.color} · Size ${freeGiftSelection.size} × 1  —  FREE`
     : "";
 
   const payLabels = { qr: "ABA / KHQR Scan to Pay", card: "Credit / Debit Card", cod: "Cash on Delivery" };
@@ -938,7 +1041,9 @@ async function sendConfirmationEmail(orderNum) {
       order_items:         itemLines + freeLines,
       subtotal:            `$${subtotal().toFixed(2)}`,
       shipping:            `$${shippingCost.toFixed(2)}`,
-      b2g1_discount:       freeItems.length > 0 ? "Free Gift Included" : "—",
+      b2g1_discount:       freeItems.length > 0
+                             ? `Free Gift — ${freeGiftSelection.color} · Size ${freeGiftSelection.size}`
+                             : "—",
       b2g1_row_style:      freeItems.length > 0 ? "" : "display:none;",
       discount:            hasDiscount ? `-$${discountAmount.toFixed(2)}` : "—",
       discount_row_style:  hasDiscount ? "" : "display:none;",
