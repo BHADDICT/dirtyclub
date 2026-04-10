@@ -32,7 +32,6 @@
       color: var(--dark);
       overflow: hidden;
       position: fixed;
-      /* Use dvh for modern iOS, fallback to 100% */
       height: 100dvh;
     }
 
@@ -70,16 +69,6 @@
       z-index: 8999;
     }
 
-    /* LOCKED tag */
-    #locked-tag {
-      position: fixed; top: 15px; right: 22px;
-      font-size: 10px; letter-spacing: 0.18em;
-      color: var(--dark); opacity: 0.5;
-      z-index: 8999;
-      display: flex; align-items: center; gap: 6px;
-    }
-    #locked-tag svg { width: 11px; height: 11px; stroke: var(--dark); fill: none; stroke-width: 2; }
-
     /* Ticker */
     .ticker-wrap {
       position: fixed; bottom: 0; left: 0; right: 0;
@@ -98,138 +87,13 @@
     }
     @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-    /* ══ LOCK SCREEN ══ */
-    #lock-screen {
-      position: fixed;
-      /* Use JS-set pixel values so keyboard cannot affect layout */
-      top: 0; left: 0; right: 0;
-      background: var(--cream);
-      z-index: 5000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px 20px 50px;
-      transition: opacity 0.7s ease, visibility 0.7s ease;
-      /* Force GPU layer — prevents any reflow from keyboard */
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-      will-change: opacity;
-    }
-    #lock-screen.hide {
-      opacity: 0; visibility: hidden; pointer-events: none;
-    }
-
-    /* 3D tilt wrapper */
-    #logo-3d-wrap {
-      width: min(220px, 58vw);
-      height: min(220px, 58vw);
-      margin-bottom: 40px;
-      perspective: 700px;
-      cursor: grab;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    #logo-3d-wrap:active { cursor: grabbing; }
-
-    #lock-logo {
-      width: 100%; height: auto;
-      display: block;
-      transform-style: preserve-3d;
-      transform: rotateX(0deg) rotateY(0deg) scale(1);
-      transition: transform 0.08s ease-out, filter 0.08s ease-out;
-      border-radius: 50%;
-      will-change: transform;
-      filter: drop-shadow(0px 8px 24px rgba(0,0,0,0.18));
-    }
-
-    .lock-label {
-      font-size: 9px; letter-spacing: 0.38em;
-      text-transform: uppercase; color: var(--muted);
-      margin-bottom: 16px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    .pw-row {
-      display: flex; align-items: stretch; gap: 0;
-      border: 1px solid rgba(26,18,8,0.22);
-      overflow: hidden;
-      width: min(280px, 86vw);
-      flex-shrink: 0;
-    }
-
-    #pw-input {
-      background: transparent;
-      border: none;
-      outline: none;
-      font-family: 'Share Tech Mono', monospace;
-      /* 16px = iOS magic number that prevents auto-zoom */
-      font-size: 16px;
-      letter-spacing: 0.15em;
-      color: var(--dark);
-      padding: 13px 16px;
-      flex: 1;
-      min-width: 0;
-      -webkit-text-size-adjust: 100%;
-      -webkit-appearance: none;
-      appearance: none;
-      /* Prevent scroll on focus */
-      touch-action: manipulation;
-    }
-    #pw-input::placeholder {
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      font-size: 14px;
-    }
-
-    #pw-submit {
-      background: var(--dark); border: none; cursor: pointer;
-      padding: 13px 18px; color: var(--cream);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px; letter-spacing: 0.2em;
-      text-transform: uppercase;
-      transition: background 0.2s;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-    #pw-submit:hover, #pw-submit:active { background: var(--red); }
-
-    #pw-error {
-      font-size: 9px; letter-spacing: 0.22em;
-      color: var(--red); margin-top: 14px;
-      opacity: 0; transition: opacity 0.3s;
-      text-transform: uppercase;
-      text-align: center;
-      flex-shrink: 0;
-      height: 14px;
-    }
-    #pw-error.show { opacity: 1; }
-
-    @keyframes shake {
-      0%,100%{transform:translateX(0)}
-      20%{transform:translateX(-7px)}
-      40%{transform:translateX(7px)}
-      60%{transform:translateX(-4px)}
-      80%{transform:translateX(4px)}
-    }
-    .shake { animation: shake 0.38s ease; }
-
-    /* ══ MAIN SITE ══ */
+    /* MAIN SITE */
     main {
       position: fixed;
       inset: 0;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 50px 20px 50px;
-      filter: blur(10px);
-      transition: filter 0.9s ease;
-      pointer-events: none;
-    }
-    main.unlocked {
-      filter: blur(0);
-      pointer-events: all;
     }
 
     .logo-img {
@@ -279,12 +143,11 @@
     .socials a:hover { color: var(--red); transform: translateY(-2px); }
     .socials svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; }
 
-    .reveal { opacity: 0; transform: translateY(10px); }
-    main.unlocked .reveal { animation: fadeUp 0.55s ease forwards; }
-    main.unlocked .r1 { animation-delay: 0.05s; }
-    main.unlocked .r2 { animation-delay: 0.18s; }
-    main.unlocked .r3 { animation-delay: 0.28s; }
-    main.unlocked .r4 { animation-delay: 0.38s; }
+    .reveal { opacity: 0; transform: translateY(10px); animation: fadeUp 0.55s ease forwards; }
+    .r1 { animation-delay: 0.05s; }
+    .r2 { animation-delay: 0.18s; }
+    .r3 { animation-delay: 0.28s; }
+    .r4 { animation-delay: 0.38s; }
 
     @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
   </style>
@@ -297,11 +160,6 @@
   <div class="vhs-corner br"></div>
   <div id="timestamp">00:00:00</div>
 
-  <div id="locked-tag">
-    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-    LOCKED
-  </div>
-
   <div class="ticker-wrap">
     <div class="ticker-inner">
       <span>DIRTY CLUB — BUY2 FREE 1 — DIRTY CLUB — BUY2 FREE 1 — DIRTY CLUB — BUY2 FREE 1 — DIRTY CLUB —BUY2 FREE 1 — DIRTY CLUB — NOT FOR EVERYONE — </span>
@@ -309,31 +167,7 @@
     </div>
   </div>
 
-  <!-- LOCK SCREEN -->
-  <div id="lock-screen">
-    <div id="logo-3d-wrap">
-      <img id="lock-logo" src="./img/logo11.png" alt="Dirty Club" />
-    </div>
-    <div class="lock-label">Enter password to access</div>
-    <div class="pw-row">
-      <input
-        id="pw-input"
-        type="password"
-        placeholder="password"
-        maxlength="30"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
-        spellcheck="false"
-        inputmode="text"
-      />
-      <button id="pw-submit">Enter</button>
-    </div>
-    <div id="pw-error">Wrong password</div>
-  </div>
-
-  <!-- MAIN SITE -->
-  <main id="main-site">
+  <main>
     <img class="logo-img reveal r1" src="./img/logo11.png" alt="Dirty Club" />
     <nav class="reveal r2">
       <a href="#">Home</a>
@@ -356,7 +190,6 @@
   </main>
 
 <script>
-  // ── Timestamp ──
   const tsEl = document.getElementById('timestamp');
   function pad(n){ return String(n).padStart(2,'0'); }
   (function tick(){
@@ -365,146 +198,6 @@
     requestAnimationFrame(tick);
   })();
 
-  // ── Freeze lock screen height so keyboard can't push/resize it ──
-  const lockScreen = document.getElementById('lock-screen');
-
-  function freezeLayout() {
-    // Capture the real viewport height BEFORE keyboard opens
-    const h = window.innerHeight;
-    lockScreen.style.height = h + 'px';
-  }
-
-  // Set on load
-  freezeLayout();
-
-  // On iOS, the keyboard triggers visualViewport resize.
-  // We deliberately do NOT update lockScreen height on those events.
-  // The fixed height keeps everything locked in place.
-
-  // Only re-freeze on orientation change (not keyboard pop)
-  window.addEventListener('orientationchange', () => {
-    // Small delay to let browser settle after rotation
-    setTimeout(freezeLayout, 300);
-  });
-
-  // Blur input when keyboard "Enter" is pressed to dismiss keyboard cleanly
-  document.getElementById('pw-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      this.blur();
-    }
-  });
-
-  // ── 3D tilt logo ──
-  (function(){
-    const wrap = document.getElementById('logo-3d-wrap');
-    const logo = document.getElementById('lock-logo');
-    const MAX_TILT = 28;
-    const MAX_LIFT = 1.10;
-    let isDragging = false;
-    let rotX = 0, rotY = 0;
-    let velX = 0, velY = 0;
-    let lastX = 0, lastY = 0;
-    let rafId = null;
-
-    function applyTransform(rx, ry, scale) {
-      logo.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(${scale})`;
-      const lift = (scale - 1) / (MAX_LIFT - 1);
-      const blur = 8 + lift * 32;
-      const alpha = 0.12 + lift * 0.22;
-      logo.style.filter = `drop-shadow(0px ${4 + lift*20}px ${blur}px rgba(0,0,0,${alpha}))`;
-    }
-
-    wrap.addEventListener('mousedown', e => {
-      isDragging = true; lastX = e.clientX; lastY = e.clientY;
-      velX = velY = 0; cancelAnimationFrame(rafId);
-      wrap.style.cursor = 'grabbing'; e.preventDefault();
-    });
-    window.addEventListener('mousemove', e => {
-      if (!isDragging) return;
-      const dx = e.clientX - lastX, dy = e.clientY - lastY;
-      velY = dx * 0.45; velX = -dy * 0.45;
-      rotY = Math.max(-MAX_TILT, Math.min(MAX_TILT, rotY + velY));
-      rotX = Math.max(-MAX_TILT, Math.min(MAX_TILT, rotX + velX));
-      lastX = e.clientX; lastY = e.clientY;
-      applyTransform(rotX, rotY, MAX_LIFT);
-    });
-    window.addEventListener('mouseup', () => {
-      if (!isDragging) return;
-      isDragging = false; wrap.style.cursor = 'grab'; inertia();
-    });
-    wrap.addEventListener('touchstart', e => {
-      isDragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-      velX = velY = 0; cancelAnimationFrame(rafId);
-    }, { passive: true });
-    wrap.addEventListener('touchmove', e => {
-      if (!isDragging) return;
-      const dx = e.touches[0].clientX - lastX, dy = e.touches[0].clientY - lastY;
-      velY = dx * 0.45; velX = -dy * 0.45;
-      rotY = Math.max(-MAX_TILT, Math.min(MAX_TILT, rotY + velY));
-      rotX = Math.max(-MAX_TILT, Math.min(MAX_TILT, rotX + velX));
-      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-      applyTransform(rotX, rotY, MAX_LIFT);
-    }, { passive: true });
-    wrap.addEventListener('touchend', () => { isDragging = false; inertia(); });
-
-    function inertia() {
-      cancelAnimationFrame(rafId);
-      function step() {
-        if (isDragging) return;
-        velX *= 0.88; velY *= 0.88;
-        rotX += velX; rotY += velY;
-        rotX *= 0.92; rotY *= 0.92;
-        const scale = 1 + (Math.abs(rotX) + Math.abs(rotY)) / (MAX_TILT * 2) * (MAX_LIFT - 1);
-        applyTransform(rotX, rotY, scale);
-        if (Math.abs(rotX) > 0.05 || Math.abs(rotY) > 0.05 || Math.abs(velX) > 0.01 || Math.abs(velY) > 0.01) {
-          rafId = requestAnimationFrame(step);
-        } else {
-          rotX = rotY = velX = velY = 0;
-          applyTransform(0, 0, 1);
-        }
-      }
-      rafId = requestAnimationFrame(step);
-    }
-    applyTransform(0, 0, 1);
-  })();
-
-  // ── Password gate ──
-  const PASSWORD = 'smoke420';
-  const mainSite  = document.getElementById('main-site');
-  const pwInput   = document.getElementById('pw-input');
-  const pwSubmit  = document.getElementById('pw-submit');
-  const pwError   = document.getElementById('pw-error');
-  const lockedTag = document.getElementById('locked-tag');
-
-  function tryUnlock() {
-    if (pwInput.value.toLowerCase() === PASSWORD.toLowerCase()) {
-      lockScreen.classList.add('hide');
-      mainSite.classList.add('unlocked');
-      lockedTag.innerHTML = `
-        <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:var(--dark);fill:none;stroke-width:2">
-          <rect x="3" y="11" width="18" height="11" rx="2"/>
-          <path d="M7 11V7a5 5 0 0110 0"/>
-        </svg>UNLOCKED`;
-    } else {
-      pwError.classList.add('show');
-      const row = document.querySelector('.pw-row');
-      row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake');
-      pwInput.value = '';
-      setTimeout(()=>pwError.classList.remove('show'), 2000);
-    }
-  }
-
-  pwSubmit.addEventListener('click', tryUnlock);
-  // Enter key both unlocks AND blurs keyboard
-  pwInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      tryUnlock();
-      pwInput.blur();
-    }
-  });
-
-  // subtle glitch
   setInterval(()=>{
     if(Math.random()<0.03){
       document.body.style.filter='brightness(1.04)';
